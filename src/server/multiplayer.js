@@ -66,7 +66,7 @@ export function mutateMatch(r,a,now=Date.now()){
  if(a.op==='read')return {};
  if(a.op==='settings'){
   if(!host||r.phase!=='lobby')fail('Only the host can change lobby settings.');
-  r.mode=a.mode==='multi'?'multi':'shared';
+  if(a.mode==='multi'||a.mode==='shared')r.mode=a.mode;
   if(a.game==='golf'||a.game==='hoops')r.game=a.game;
   return {};
  }

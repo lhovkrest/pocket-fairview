@@ -92,6 +92,7 @@ export function simulateHoopsShot(spot, power) {
   let touchedRim = false;
   let touchedBoard = false;
   let stoppedAt = null;
+  let floorAt = null;
 
   for (let i = 0; i < 240 * 6; i++) {
     const prev = {...ball};
@@ -153,6 +154,7 @@ export function simulateHoopsShot(spot, power) {
     }
 
     if (ball.y <= HOOPS.ballRadius) {
+      if (floorAt == null) floorAt = t;
       ball.y = HOOPS.ballRadius;
       if (ball.vy < -0.55) ball.vy = -ball.vy * 0.52;
       else ball.vy = 0;
@@ -165,6 +167,11 @@ export function simulateHoopsShot(spot, power) {
 
     // A made basket can cut away shortly after the ball clears the net.
     if (made && makeAt != null && t - makeAt > 0.85) {
+      stoppedAt = t;
+      break;
+    }
+    // Misses only need one bounce to read as a miss on the big screen.
+    if (floorAt != null && t - floorAt > 0.65) {
       stoppedAt = t;
       break;
     }

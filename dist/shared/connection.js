@@ -1,7 +1,8 @@
 import {EV} from './protocol.js';
 export function connectGame(){return window.GOLF_CLOUD?new CloudConnection():window.io();}
 class CloudConnection{
- constructor(){this.handlers=new Map();this.connected=true;this.session=null;this.queue=[];this.cursor=0;this.version=-1;this.peer=false;this.id=Date.now()*100;this.pendingHUD=null;this.busy=false;queueMicrotask(()=>this.dispatch('connect'));}
+ constructor(){this.handlers=new Map();this.connected=true;this.session=null;this.queue=[];this.cursor=0;this.version=-1;this.peer=false;this.id=Date.now()*100;this.pendingHUD=null;this.busy=false;this.pace=350;queueMicrotask(()=>this.dispatch('connect'));}
+ setPollInterval(ms){const next=Math.max(40,Math.min(2000,Number(ms)||350));if(next===this.pace)return;this.pace=next;if(this.session&&!this.busy)this.poll();}
  on(ev,fn){if(!this.handlers.has(ev))this.handlers.set(ev,[]);this.handlers.get(ev).push(fn);return this;}
  dispatch(ev,data){for(const fn of this.handlers.get(ev)??[])fn(data);}
  timeout(){return {emit:(ev,data,cb)=>this.emit(ev,data,res=>cb(res?.ok?null:Error(res?.message),res))};}
@@ -34,6 +35,6 @@ class CloudConnection{
     if(r.version!==this.version||recovered||expired){this.version=r.version;this.dispatch(EV.HUD,r.hud);}
    }
   }catch{if(hud&&!this.pendingHUD)this.pendingHUD=hud;if(this.connected){this.connected=false;this.dispatch('disconnect');}}
-  finally{this.busy=false;this.timer=setTimeout(()=>this.poll(),this.connected?(this.queue.length?20:document.hidden?2000:350):2000);}
+  finally{this.busy=false;this.timer=setTimeout(()=>this.poll(),this.connected?(this.queue.length?16:document.hidden?1500:this.pace):1500);}
  }
 }

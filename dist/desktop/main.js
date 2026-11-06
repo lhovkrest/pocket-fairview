@@ -4,7 +4,7 @@ import {connectGame} from '/shared/connection.js';
 import {HOLES,CLUBS,newBall,launch,step,distance,surfaceAt,clamp} from '/shared/golf.js';
 import {Effects} from '/desktop/effects.js';
 const $=id=>document.getElementById(id);
-const socket=connectGame();let hostSession=null,phone=null,practice=false,index=0,strokes=0,scores=[],club='driver',aim=0,state='lobby',ball=newBall(),launchPoint={...ball},lastId=0;
+const socket=connectGame();socket.setPollInterval?.(260);let hostSession=null,phone=null,practice=false,index=0,strokes=0,scores=[],club='driver',aim=0,state='lobby',ball=newBall(),launchPoint={...ball},lastId=0;
 let messageUntil=0,elapsed=0,accumulator=0,lastHUD=0,celebrationUntil=0;
 const scene=new THREE.Scene();scene.background=new THREE.Color('#d8e8d4');scene.fog=new THREE.Fog('#d8e8d4',120,280);
 const renderer=new THREE.WebGLRenderer({canvas:$('view'),antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -45,7 +45,7 @@ function setClub(value){if(state!=='ready'||!CLUBS[value])return;club=value;hud(
 $('clubs').innerHTML=Object.entries(CLUBS).map(([key,c])=>`<button data-club="${key}">${c.label}</button>`).join('');document.querySelectorAll('[data-club]').forEach(b=>b.onclick=()=>setClub(b.dataset.club));
 $('aim').oninput=()=>{if(state==='ready'){aim=Number($('aim').value);hud();}};$('power').oninput=()=>$('powervalue').textContent=$('power').value+'%';
 function nextHole(){effects.clear();celebrationUntil=0;ball=newBall();strokes=0;aim=0;club='driver';state='ready';buildCourse();$('result').classList.add('hidden');hud();message(HOLES[index].name,3);}
-function start(local){practice=local;if(!local&&!phone?.connected)return;scores=[];index=0;lastId=0;$('lobby').classList.add('hidden');$('hud').classList.remove('hidden');$('powercontrol').classList.toggle('hidden',!local);$('hit').classList.toggle('hidden',!local);$('hint').textContent=local?'Adjust aim and power, then swing. Space also hits.':'On your phone: hold SWING, make a gentle swing, then release.';socket.emit(EV.HOST_PHASE,'game');nextHole();}
+function start(local){practice=local;if(!local&&!phone?.connected)return;scores=[];index=0;lastId=0;$('lobby').classList.add('hidden');$('hud').classList.remove('hidden');$('powercontrol').classList.toggle('hidden',!local);$('hit').classList.toggle('hidden',!local);$('hint').textContent=local?'Adjust aim and power, then swing. Space also hits.':'On your phone: hold SWING, make a gentle swing, then release.';socket.setPollInterval?.(70);socket.emit(EV.HOST_PHASE,'game');nextHole();}
 $('start').onclick=()=>start(false);$('practice').onclick=()=>start(true);$('hit').onclick=()=>strike(Number($('power').value)/100);
 addEventListener('keydown',e=>{if(e.code==='Space'&&practice&&state==='ready'&&!['INPUT','BUTTON'].includes(document.activeElement.tagName)){e.preventDefault();strike(Number($('power').value)/100);}});
 function strike(power){if(state!=='ready'||!Number.isFinite(power))return;launchPoint={...ball};if(!launch(ball,HOLES[index],club,power,aim))return;strokes++;state='flight';effects.burst(ball,0xffe9a6,36,5);effects.kick=power;message(`${CLUBS[club].label} · ${Math.round(power*100)}%`,2);tell(EV.HAPTIC,{pattern:[20]});hud();}

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {HOOPS, HOOPS_SPOTS, HOOP_SHOTS, hoopDistance} from '/shared/hoops.js';
+import {HOOPS, HOOPS_SPOTS, HOOP_SHOTS} from '/shared/hoops.js';
 import {Effects} from '/desktop/effects.js';
 
 const TAU = Math.PI * 2;
@@ -101,17 +101,17 @@ export function createHoopsView(canvas) {
   );
   board.position.set(0, 3.44, HOOPS.backboard.z);
   arena.add(board);
-  const frame = new THREE.Group();
-  arena.add(frame);
+  const boardFrame = new THREE.Group();
+  arena.add(boardFrame);
   for (const [w, h, x, y] of [[1.96, 0.07, 0, 3.995], [1.96, 0.07, 0, 2.885], [0.07, 1.18, -0.965, 3.44], [0.07, 1.18, 0.965, 3.44]]) {
     const bar = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.08), mat('#dce9ef', {metalness: 0.35, roughness: 0.35}));
     bar.position.set(x, y, HOOPS.backboard.z - 0.01);
-    frame.add(bar);
+    boardFrame.add(bar);
   }
   for (const [w, h, x, y] of [[0.63, 0.045, 0, 3.3], [0.63, 0.045, 0, 3.02], [0.045, 0.33, -0.29, 3.16], [0.045, 0.33, 0.29, 3.16]]) {
     const bar = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.035), mat('#ef7541', {emissive: 0x6b1f0b, emissiveIntensity: 0.25}));
     bar.position.set(x, y, HOOPS.backboard.z + 0.055);
-    frame.add(bar);
+    boardFrame.add(bar);
   }
   const rim = new THREE.Mesh(
     new THREE.TorusGeometry(HOOPS.rim.radius, HOOPS.rim.tube, 10, 48),
@@ -391,10 +391,6 @@ export function createHoopsView(canvas) {
     requestAnimationFrame(frame);
     const dt = Math.min((now - last) / 1000, 0.1);
     last = now;
-    if (current && current.phase === 'flight') {
-      // Keep the ball visible if the match update moved from flight while the
-      // local animation was mid-air; the next poll will replace this.
-    }
     camera.position.lerp(desired, 1 - Math.exp(-dt * 2.4));
     look.lerp(focus, 1 - Math.exp(-dt * 3.2));
     camera.lookAt(look);

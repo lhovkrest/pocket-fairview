@@ -30,9 +30,9 @@ function buildCourse(){
 }
 function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}addEventListener('resize',resize);resize();buildCourse();
 
- let last=performance.now(),current=null,shotId=null,celebrated=null;const look=new THREE.Vector3(),desired=new THREE.Vector3();
+ let last=performance.now(),current=null,shotId=null,celebrated=null,active=true;const look=new THREE.Vector3(),desired=new THREE.Vector3();
  const otherBalls=Array.from({length:4},()=>mesh(new THREE.SphereGeometry(.25,12,10),'#ffffff',scene));
- function frame(now){requestAnimationFrame(frame);const dt=Math.min((now-last)/1000,.1);last=now;
+ function frame(now){if(!active)return;requestAnimationFrame(frame);const dt=Math.min((now-last)/1000,.1);last=now;
   let b={x:0,y:.22,z:5},moving=false,aim=0;
   if(current){const h=HOLES[current.hole];if(index!==current.hole){index=current.hole;buildCourse();effects.clear();}
    const p=current.players.find(p=>p.id===current.turn)??current.players[0];if(p){b={...p.ball};aim=p.aim;}
@@ -50,5 +50,5 @@ function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWi
   if(aimLine.visible){const angle=Math.atan2(dx,dz)+aim*Math.PI/180;aimLine.geometry.dispose();aimLine.geometry=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(b.x,.15,b.z),new THREE.Vector3(b.x+Math.sin(angle)*35,.15,b.z+Math.cos(angle)*35)]);aimLine.computeLineDistances();}
   camera.position.lerp(desired,1-Math.exp(-dt*3));camera.lookAt(look);camera.fov=48+effects.kick*4;camera.updateProjectionMatrix();renderer.render(scene,camera);
  }requestAnimationFrame(frame);
- return {update(match){current=match;},renderer};
+ return {update(match){current=match;},renderer,destroy(){active=false;effects.clear();renderer.dispose();}};
 }
