@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+const base=process.env.GOLF_URL||'https://pocket-fairway.vercel.app';
+async function request(body){const response=await fetch(base+'/api/room',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return response.json();}
+const room=await request({op:'create'});assert.equal(room.ok,true,room.message);
+const host={op:'poll',code:room.code,role:'host',token:room.hostToken};
+assert.equal((await request({...host,token:undefined})).ok,false);
+assert.equal((await request({...host,role:'phone',token:undefined})).ok,false);
+const phone=await request({op:'join',code:room.code});assert.equal(phone.ok,true,phone.message);
+assert.equal((await request({op:'join',code:room.code})).ok,false);
+const control={op:'poll',code:room.code,role:'phone',token:phone.token};
+await request({...host,hud:{state:'ready',hole:1}});
+await request({...host,hud:null});
+assert.equal((await request(control)).hud.state,'ready');
+const events=[{id:1,ev:'trigger',data:{kind:'swing',id:Date.now(),power:.5}}];
+assert.equal((await request({...control,events})).ok,true);
+await request({...control,events});
+const received=await request(host);assert.equal(received.events.length,1);assert.equal(received.events[0].data.kind,'swing');
+assert.equal(received.host,undefined);assert.equal(received.player,undefined);
+const reconnect=await request({op:'join',code:room.code,token:phone.token});assert.equal(reconnect.ok,true);
+assert.equal((await request({...control,token:'a'.repeat(48)})).ok,false);
+console.log('PASS: live cloud pairing, token enforcement, room ownership, HUD persistence, command deduplication and controller reconnect.');

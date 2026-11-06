@@ -1,0 +1,168 @@
+🔑 Got authentication token
+
+🔍 Fetching deployment info for: 4TcM895rtuXAfL2bSa1Weg24tX5Q
+   Resolving teams...
+   Trying 4TcM895rtuXAfL2bSa1Weg24tX5Q in personal account...
+   Trying dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q in personal account...
+✅ Got deployment info
+
+📦 Deployment ID:  dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q
+🌐 Deployment URL: pocket-fairway-mhux7b8r6-lhovkrests-projects.vercel.app
+📁 Project:        pocket-fairway
+
+📋 Fetching file tree from API...
+
+✅ Got file tree (8 top-level entries)
+
+📁 Output directory: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source
+
+🗑️  Clearing previous download...
+
+⬇️  Downloading files...
+   (Use --verbose to see detailed progress)
+
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\api\multiplayer.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\api\room.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\controller\assets\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\controller\assets\main.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\controller\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\desktop\effects.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\desktop\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\desktop\main.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\client.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\controller.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\controller.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\main.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\pvp.css
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\view.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\club-swing.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\connection.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\golf.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\motion-aim.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\protocol.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\solo\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\styles\app.css
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.cjs
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.core.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.module.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.tsl.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.webgpu.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.webgpu.nodes.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\scripts\browser-check.mjs
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\scripts\build.mjs
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\scripts\cloud-check.mjs
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\scripts\pvp-browser-check.mjs
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-desktop\effects.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-desktop\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-desktop\main.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-mobile\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-mobile\main.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\client.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\controller.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\controller.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\index.html
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\main.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\pvp.css
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\view.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\server\RoomManager.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\server\certs.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\server\index.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\server\multiplayer.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\club-swing.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\connection.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\golf.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\motion-aim.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\protocol.js
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\styles\app.css
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\.vercelignore
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\package-lock.json
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\package.json
+✅ Downloaded: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\vercel.json
+
+🎉 All files processed successfully!
+
+📊 Running comparison...
+
+📁 Total files: 59
+   ✅ Downloaded: 59
+   ⏭️  Skipped: 0
+   ❌ Failed: 0
+💾 Total size: 6.89 MB
+
+📈 File types breakdown:
+   js                35 files
+   html              11 files
+   css                4 files
+   mjs                4 files
+   json               3 files
+   cjs                1 files
+   vercelignore       1 files
+
+🌳 File structure tree:
+
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\.vercelignore
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\api\multiplayer.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\api\room.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\controller\assets\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\controller\assets\main.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\controller\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\desktop\effects.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\desktop\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\desktop\main.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\client.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\controller.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\controller.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\main.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\pvp.css
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\pvp\view.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\club-swing.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\connection.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\golf.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\motion-aim.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\shared\protocol.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\solo\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\styles\app.css
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.cjs
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.core.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.module.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.tsl.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.webgpu.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\dist\vendor\three\build\three.webgpu.nodes.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\package-lock.json
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\package.json
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\scripts\browser-check.mjs
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\scripts\build.mjs
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\scripts\cloud-check.mjs
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\scripts\pvp-browser-check.mjs
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-desktop\effects.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-desktop\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-desktop\main.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-mobile\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\client-mobile\main.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\client.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\controller.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\controller.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\index.html
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\main.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\pvp.css
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\pvp\view.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\server\certs.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\server\index.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\server\multiplayer.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\server\RoomManager.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\club-swing.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\connection.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\golf.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\motion-aim.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\shared\protocol.js
+├── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\src\styles\app.css
+└── 📄 C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\source\vercel.json
+
+✨ Download and verification complete!
+📄 Full log saved to: C:\Users\kim\out\dpl_4TcM895rtuXAfL2bSa1Weg24tX5Q\download-log.txt
+   (Use --verbose to see file tree and skipped files)
+
