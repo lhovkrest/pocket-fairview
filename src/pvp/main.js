@@ -40,9 +40,9 @@ function render(m){
  $('starthelp').textContent=host?'At least two connected players must be ready.':'The host starts when everyone is ready.';
  $('layoutlabel').textContent=m.mode==='multi'?'Multiple screens · share this room with your friends':'One shared screen · everyone watches here';$('screenlinkbox').hidden=m.mode!=='multi';
  $('gamenametitle').textContent=hoops?'Pocket Hoops':'Pocket Fairway';
- $('gamerule').textContent=hoops?'Five shots from five spots. Highest total score wins — power is everything.':'Six holes across the meadow. Lowest total strokes wins.';
+ $('gamerule').textContent=hoops?'Five shots from five spots. Highest total score wins — hold, then release in the green zone to sink it.':'Six holes across the meadow. Lowest total strokes wins.';
  $('lobbygames').querySelectorAll('[data-lobby-game]').forEach(b=>{b.classList.toggle('selected',b.dataset.lobbyGame===m.game);b.disabled=!host||!lobby;});
- $('roomhint').textContent=hoops?'Scan with each phone, tap Ready, then hold and flick to shoot.':'Scan with each phone, enter a name, then tap Ready.';
+ $('roomhint').textContent=hoops?'Scan with each phone, tap Ready, then hold and release in the green zone to shoot.':'Scan with each phone, enter a name, then tap Ready.';
  $('manage').textContent=hoops?'Manage players':'Manage golfers';
  const joinUrl=links?.joinUrl??`${location.origin}/pvp/controller?code=${m.code}`,viewUrl=links?.viewUrl??`${location.origin}/pvp?code=${m.code}`;$('phonelink').href=joinUrl;$('phonelink').textContent='Join on your phone ↗';$('screenlink').href=viewUrl;$('screenlink').textContent=viewUrl;if(links?.qrSvg)$('qr').innerHTML=links.qrSvg;
  const current=m.players.find(p=>p.id===m.turn);
@@ -53,7 +53,7 @@ function render(m){
   $('hole').textContent=m.phase==='lobby'?`${HOOP_SHOTS} shots · first to the buzzer`:`Shot ${Math.min(m.hole+1,HOOP_SHOTS)} / ${HOOP_SHOTS} · ${spot.points} points`;
   $('course').textContent=spot.name;
   $('turn').textContent=m.phase==='finished'?winner(m):m.phase==='flight'?'Ball in the air':current?`${current.name} shooting`:'Waiting';
-  $('turnhint').textContent=m.phase==='flight'?'':m.phase==='ready'?'Hold · flick the phone up · release':m.phase==='finished'?'Highest total score wins':'Everyone shoots once from each spot.';
+  $('turnhint').textContent=m.phase==='flight'?'':m.phase==='ready'?'Hold · release in the green zone':m.phase==='finished'?'Highest total score wins':'Everyone shoots once from each spot.';
   $('wind').textContent=`${Math.round(hoopDistance(spot)*10)/10} m · ${spot.points} pts`;
   $('leaderboard').innerHTML='<div class="eyebrow">Shootout scoreboard</div>'+m.players.map(p=>`<div class="score-line ${p.id===m.turn?'current':''}"><span><i class="dot" style="background:${p.color}"></i> ${escape(p.name)}${p.forfeit?' · DNF':''}</span><span>${p.hscore??0} pts</span></div><small>${(p.hshots??[]).map((n,i)=>`S${i+1}: ${n??'–'}`).join(' · ')||'No shots yet'}</small>`).join('');
   $('nextHole').hidden=true;$('returnlobby').hidden=!host||m.phase!=='finished';$('manage').hidden=!host;$('manageplayers').innerHTML=playerRows(m.players,!!host);removeButtons($('manageplayers'));

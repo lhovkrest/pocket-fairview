@@ -275,12 +275,14 @@ export function createHoopsView(canvas) {
     leg.castShadow = true;
     shooter.add(leg);
   }
+  const shooterArms = [];
   for (const x of [-0.38, 0.38]) {
-    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.075, 0.55, 4, 7), mat('#c98762'));
-    arm.position.set(x, 1.65, -0.12);
-    arm.rotation.z = x < 0 ? -0.45 : 0.45;
-    arm.rotation.x = -0.7;
-    shooter.add(arm);
+    const armMesh = new THREE.Mesh(new THREE.CapsuleGeometry(0.075, 0.55, 4, 7), mat('#c98762'));
+    armMesh.position.set(x, 1.65, -0.12);
+    armMesh.rotation.z = x < 0 ? -0.45 : 0.45;
+    armMesh.rotation.x = -0.7;
+    shooter.add(armMesh);
+    shooterArms.push(armMesh);
   }
   const jerseyNumber = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.3), new THREE.MeshBasicMaterial({color: 0xf7f5ee}));
   jerseyNumber.position.set(0, 1.55, 0.305);
@@ -298,17 +300,184 @@ export function createHoopsView(canvas) {
   scene.add(spotBeam);
 
   const effects = new Effects(scene);
+  shooter.visible = false;
+  spotMarker.visible = false;
+  spotBeam.visible = false;
+
+  // ---- Extra visuals: floor shadow, motion trail, rim pulse, confetti, shot guide ----
+  const ballShadow = new THREE.Mesh(
+    new THREE.CircleGeometry(HOOPS.ballRadius * 1.5, 24),
+    new THREE.MeshBasicMaterial({color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false}),
+  );
+  ballShadow.rotation.x = -Math.PI / 2;
+  ballShadow.position.y = 0.05;
+  ballShadow.visible = false;
+  scene.add(ballShadow);
+
+  const TRAIL = 22;
+  const trail = new THREE.InstancedMesh(
+    new THREE.SphereGeometry(HOOPS.ballRadius * 0.6, 8, 6),
+    new THREE.MeshBasicMaterial({color: 0xffa45c, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false}),
+    TRAIL,
+  );
+  trail.frustumCulled = false;
+  trail.count = 0;
+  scene.add(trail);
+  const trailPts = [];
+
+  const pulse = new THREE.Mesh(
+    new THREE.RingGeometry(0.92, 1, 48),
+    new THREE.MeshBasicMaterial({color: 0xffc07a, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending}),
+  );
+  pulse.rotation.x = -Math.PI / 2;
+  pulse.position.set(HOOPS.rim.x, HOOPS.rim.y - 0.05, HOOPS.rim.z);
+  pulse.visible = false;
+  scene.add(pulse);
+
+  const CONF = 90;
+  const confetti = new THREE.InstancedMesh(
+    new THREE.BoxGeometry(0.08, 0.015, 0.11),
+    new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide}),
+    CONF,
+  );
+  confetti.frustumCulled = false;
+  const confPalette = ['#ff8a52', '#ffd36a', '#7fd1ff', '#c8f07e', '#ffffff', '#ff6fa5'];
+  const bits = [];
+  dummy.position.set(0, -10, 0);
+  dummy.rotation.set(0, 0, 0);
+  dummy.scale.setScalar(0);
+  dummy.updateMatrix();
+  for (let i = 0; i < CONF; i++) {
+    bits.push({life: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, rx: 0, ry: 0, sx: 0, sy: 0});
+    confetti.setMatrixAt(i, dummy.matrix);
+    confetti.setColorAt(i, color.set(confPalette[i % confPalette.length]));
+  }
+  confetti.instanceMatrix.needsUpdate = true;
+  if (confetti.instanceColor) confetti.instanceColor.needsUpdate = true;
+  scene.add(confetti);
+  let confCursor = 0;
+  let confLive = false;
+
+  function burstConfetti(origin, count = 56) {
+    for (let n = 0; n < count; n++) {
+      const b = bits[confCursor];
+      confCursor = (confCursor + 1) % CONF;
+      const a = Math.random() * TAU;
+      const out = 0.6 + Math.random() * 1.8;
+      b.life = 1.6 + Math.random() * 0.9;
+      b.x = origin.x;
+      b.y = origin.y;
+      b.z = origin.z;
+      b.vx = Math.cos(a) * out;
+      b.vz = Math.sin(a) * out;
+      b.vy = 2.2 + Math.random() * 2.6;
+      b.rx = Math.random() * TAU;
+      b.ry = Math.random() * TAU;
+      b.sx = (Math.random() - 0.5) * 12;
+      b.sy = (Math.random() - 0.5) * 12;
+    }
+    confLive = true;
+  }
+
+  function updateConfetti(dt) {
+    if (!confLive) return;
+    let alive = false;
+    for (let i = 0; i < CONF; i++) {
+      const b = bits[i];
+      if (b.life > 0) {
+        b.life -= dt;
+        b.vy -= 4.2 * dt;
+        const drag = Math.exp(-dt * 1.4);
+        b.vx *= drag;
+        b.vz *= drag;
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+        b.z += b.vz * dt;
+        b.rx += b.sx * dt;
+        b.ry += b.sy * dt;
+        if (b.y < 0.05) {
+          // Land and lie flat, still spinning a little on the floor.
+          b.y = 0.05;
+          b.vy = 0;
+          b.vx *= 0.8;
+          b.vz *= 0.8;
+          b.rx = 0;
+          b.sx = 0;
+          b.sy *= 0.9;
+        }
+        dummy.position.set(b.x, b.y, b.z);
+        dummy.rotation.set(b.rx, b.ry, 0);
+        dummy.scale.setScalar(Math.max(0, Math.min(1, b.life * 2.5)));
+        alive = true;
+      } else {
+        dummy.position.set(0, -10, 0);
+        dummy.rotation.set(0, 0, 0);
+        dummy.scale.setScalar(0);
+      }
+      dummy.updateMatrix();
+      confetti.setMatrixAt(i, dummy.matrix);
+    }
+    confetti.instanceMatrix.needsUpdate = true;
+    confLive = alive;
+  }
+
+  // A faint dashed arc from the shooter to the rim so everyone can see where the shot is headed.
+  const guide = new THREE.Line(
+    new THREE.BufferGeometry(),
+    new THREE.LineDashedMaterial({color: 0xffd9b0, dashSize: 0.16, gapSize: 0.12, transparent: true, opacity: 0.5, depthWrite: false}),
+  );
+  guide.visible = false;
+  guide.frustumCulled = false;
+  scene.add(guide);
+
+  function buildGuide(s) {
+    const sy = 2.55;
+    const dist = Math.hypot(HOOPS.rim.x - s.x, HOOPS.rim.z - s.z);
+    const apex = 0.9 + dist * 0.16;
+    const pts = [];
+    for (let i = 0; i <= 36; i++) {
+      const t = i / 36;
+      pts.push(new THREE.Vector3(
+        s.x + (HOOPS.rim.x - s.x) * t,
+        sy + (HOOPS.rim.y - sy) * t + Math.sin(t * Math.PI) * apex,
+        s.z + (HOOPS.rim.z - s.z) * t,
+      ));
+    }
+    guide.geometry.dispose();
+    guide.geometry = new THREE.BufferGeometry().setFromPoints(pts);
+    guide.computeLineDistances();
+  }
+
+  // ---- Animation state ----
   let current = null;
   let active = true;
   let last = performance.now();
+  let spot = HOOPS_SPOTS[0];
+  let showPlayer = false;
   let shotId = null;
   let celebrated = null;
-  let netKick = 0;
+  let rimHitShot = null;
+  let scoreKey = '';
+  let guideSpot = null;
+  let clockOffset = null;
+  let wasFlying = false;
+  let netPos = 0;
+  let netVel = 0;
   let rimFlash = 0;
+  let rimShake = 0;
+  let camShake = 0;
+  let crowdJump = 0;
+  let pulseT = 1;
+  let ballPop = 1;
+  let armT = 0;
+  let jumpT = 1;
   const look = new THREE.Vector3(0, 2.4, -3.4);
   const desired = new THREE.Vector3(8.2, 5.6, 11.5);
-  const focus = new THREE.Vector3();
-  const point = new THREE.Vector3();
+  const focus = new THREE.Vector3(0, 2.4, -3.4);
+  const shakeVec = new THREE.Vector3();
+  const hold = {x: 0, y: 2.48, z: 0};
+
+  const easeOutBack = x => 1 + 2.70158 * Math.pow(x - 1, 3) + 1.70158 * Math.pow(x - 1, 2);
 
   function resize() {
     renderer.setSize(innerWidth, innerHeight);
@@ -319,7 +488,7 @@ export function createHoopsView(canvas) {
   resize();
 
   function pathAt(path, time, fallback) {
-    if (!path?.length) return {...fallback};
+    if (!path?.length) return {x: fallback.x, y: fallback.y, z: fallback.z, moving: false};
     if (time <= path[0][0]) return {x: path[0][1], y: path[0][2], z: path[0][3], moving: false};
     let i = path.findIndex(p => p[0] >= time);
     if (i < 0) i = path.length - 1;
@@ -333,57 +502,56 @@ export function createHoopsView(canvas) {
     };
   }
 
+  // update() only records the latest match state. Everything that moves is computed every frame in
+  // frame(), so the ball, camera and effects stay smooth between network polls.
   function update(match) {
     if (!match) return;
     current = match;
-    drawScoreboard(match);
-    const spot = HOOPS_SPOTS[Math.min(match.hole ?? 0, HOOPS_SPOTS.length - 1)];
+
+    // Smooth the server-clock estimate; the raw value jumps a little on every poll.
+    const offset = match.offset ?? 0;
+    clockOffset = clockOffset === null || Math.abs(offset - clockOffset) > 1500
+      ? offset
+      : clockOffset + (offset - clockOffset) * 0.15;
+
+    // Only repaint the scoreboard texture when something it shows has changed.
+    const key = `${match.phase}|${match.hole}|${match.turn}|${match.shot?.id ?? ''}`;
+    if (key !== scoreKey) {
+      scoreKey = key;
+      drawScoreboard(match);
+    }
+
+    spot = HOOPS_SPOTS[Math.min(match.hole ?? 0, HOOPS_SPOTS.length - 1)];
     const shooterId = match.phase === 'flight' ? match.shot?.player : match.turn;
     const p = match.players.find(p => p.id === shooterId);
-    const showPlayer = match.phase === 'ready' || match.phase === 'flight' || match.phase === 'finished';
+    showPlayer = match.phase === 'ready' || match.phase === 'flight' || match.phase === 'finished';
     shooter.visible = showPlayer && !!p;
     spotMarker.visible = showPlayer;
     spotBeam.visible = showPlayer;
+    guide.visible = match.phase === 'ready' && !!p;
     if (showPlayer) {
       const colorValue = p?.color ?? '#ffb37a';
       body.material.color.set(colorValue);
       spotMarker.material.color.set(colorValue);
       spotBeam.material.color.set(colorValue);
-      shooter.position.set(spot.x, 0, spot.z);
+      shooter.position.x = spot.x;
+      shooter.position.z = spot.z;
       shooter.rotation.y = Math.atan2(HOOPS.rim.x - spot.x, HOOPS.rim.z - spot.z);
       spotMarker.position.set(spot.x, 0.045, spot.z);
       spotBeam.position.set(spot.x, 0.06, spot.z);
     }
-    if (match.phase === 'flight' && match.shot) {
-      if (shotId !== match.shot.id) {
-        shotId = match.shot.id;
-        celebrated = null;
-        const startPos = pathAt(match.shot.path, 0, spot);
-        effects.burst(startPos, 0xffd08a, 18, 3);
-      }
-      const t = (Date.now() + (match.offset ?? 0) - match.shot.start) / 1000;
-      const b = pathAt(match.shot.path, t, spot);
-      ballGroup.position.set(b.x, b.y, b.z);
-      ballGroup.rotation.x += b.moving ? 0.12 : 0;
-      ballGroup.rotation.z += b.moving ? 0.06 : 0;
-      if (match.shot.result === 'made' && match.shot.makeAt != null && t >= match.shot.makeAt && celebrated !== match.shot.id) {
-        celebrated = match.shot.id;
-        netKick = 1;
-        rimFlash = 1;
-        effects.celebrate({x: HOOPS.rim.x, y: HOOPS.rim.y, z: HOOPS.rim.z});
-      }
-      desired.set(7.6 + b.x * 0.12, 5.25 + Math.min(1.2, Math.max(-0.2, b.y) * 0.16), 11.6);
-      focus.set(b.x * 0.35, Math.max(1.5, Math.min(3.8, b.y)), b.z * 0.4 - 2.6);
-    } else if (showPlayer) {
-      ballGroup.position.set(spot.x, 2.48, spot.z + 0.05);
-      desired.set(8.2 + spot.x * 0.08, 5.6, 11.5);
-      focus.set(spot.x * 0.2, 2.1, spot.z * 0.1 - 2.4);
-    } else {
-      ballGroup.visible = false;
-      desired.set(8.2, 5.6, 11.5);
-      focus.set(0, 2.4, -3.4);
+    if (guide.visible && guideSpot !== spot) {
+      guideSpot = spot;
+      buildGuide(spot);
     }
-    ballGroup.visible = showPlayer;
+    if (match.phase === 'flight' && match.shot && shotId !== match.shot.id) {
+      shotId = match.shot.id;
+      celebrated = null;
+      rimHitShot = null;
+      jumpT = 0;
+      trailPts.length = 0;
+      effects.burst(pathAt(match.shot.path, 0, {x: spot.x, y: 2.5, z: spot.z}), 0xffd08a, 18, 3);
+    }
   }
 
   function frame(now) {
@@ -391,20 +559,144 @@ export function createHoopsView(canvas) {
     requestAnimationFrame(frame);
     const dt = Math.min((now - last) / 1000, 0.1);
     last = now;
+
+    const m = current;
+    const flying = !!(m && showPlayer && m.phase === 'flight' && m.shot);
+    let moving = false;
+    hold.x = spot.x;
+    hold.y = 2.48 + Math.sin(now * 0.004) * 0.03;
+    hold.z = spot.z + 0.05;
+
+    // ---- Ball ----
+    if (flying) {
+      const t = (Date.now() + (clockOffset ?? 0) - m.shot.start) / 1000;
+      const b = pathAt(m.shot.path, t, hold);
+      moving = !!b.moving;
+      ballGroup.position.set(b.x, b.y, b.z);
+      if (moving) {
+        ballGroup.rotation.x += dt * 7;
+        ballGroup.rotation.z += dt * 3.6;
+      }
+      if (m.shot.result === 'made' && m.shot.makeAt != null && t >= m.shot.makeAt && celebrated !== m.shot.id) {
+        celebrated = m.shot.id;
+        netVel += 5.5;
+        rimFlash = 1;
+        camShake = 0.6;
+        crowdJump = 1;
+        pulseT = 0;
+        pulse.visible = true;
+        effects.celebrate({x: HOOPS.rim.x, y: HOOPS.rim.y, z: HOOPS.rim.z});
+        burstConfetti({x: HOOPS.rim.x, y: HOOPS.rim.y + 0.2, z: HOOPS.rim.z});
+      }
+      if (moving && rimHitShot !== m.shot.id) {
+        const dh = Math.hypot(b.x - HOOPS.rim.x, b.z - HOOPS.rim.z);
+        const reach = HOOPS.ballRadius + HOOPS.rim.tube;
+        if (Math.abs(dh - HOOPS.rim.radius) < reach * 0.85 && Math.abs(b.y - HOOPS.rim.y) < reach) {
+          rimHitShot = m.shot.id;
+          rimShake = 1;
+          netVel += 1.4;
+          effects.burst({x: b.x, y: b.y, z: b.z}, 0xffb37a, 10, 2.5);
+        }
+      }
+      if (moving) {
+        const tip = trailPts[trailPts.length - 1];
+        if (!tip || Math.hypot(b.x - tip.x, b.y - tip.y, b.z - tip.z) > 0.07) {
+          trailPts.push({x: b.x, y: b.y, z: b.z});
+          if (trailPts.length > TRAIL) trailPts.shift();
+        }
+      }
+      desired.set(7.6 + b.x * 0.12, 5.25 + Math.min(1.2, Math.max(-0.2, b.y) * 0.16), 11.6);
+      focus.set(b.x * 0.35, Math.max(1.5, Math.min(3.8, b.y)), b.z * 0.4 - 2.6);
+    } else if (showPlayer) {
+      ballGroup.position.set(hold.x, hold.y, hold.z);
+      desired.set(8.2 + spot.x * 0.08, 5.6, 11.5);
+      focus.set(spot.x * 0.2, 2.1, spot.z * 0.1 - 2.4);
+    } else {
+      desired.set(8.2, 5.6, 11.5);
+      focus.set(0, 2.4, -3.4);
+    }
+
+    // The next ball pops into the shooter's hands instead of teleporting there.
+    if (wasFlying && !flying) ballPop = 0;
+    wasFlying = flying;
+    if (ballPop < 1) ballPop = Math.min(1, ballPop + dt * 3.5);
+    ballGroup.scale.setScalar(Math.max(0.001, easeOutBack(ballPop)));
+    ballGroup.visible = showPlayer;
+
+    // Motion trail, fading out once the ball stops.
+    if (!moving && trailPts.length) trailPts.shift();
+    const n = trailPts.length;
+    trail.count = n;
+    for (let i = 0; i < n; i++) {
+      const p = trailPts[i];
+      dummy.position.set(p.x, p.y, p.z);
+      dummy.rotation.set(0, 0, 0);
+      dummy.scale.setScalar(0.2 + 0.8 * ((i + 1) / n));
+      dummy.updateMatrix();
+      trail.setMatrixAt(i, dummy.matrix);
+    }
+    if (n) trail.instanceMatrix.needsUpdate = true;
+
+    // Soft shadow on the floor that shrinks and fades as the ball rises.
+    ballShadow.visible = showPlayer;
+    if (showPlayer) {
+      const h = Math.max(0, ballGroup.position.y);
+      ballShadow.position.set(ballGroup.position.x, 0.05, ballGroup.position.z);
+      ballShadow.scale.setScalar(Math.max(0.4, 1.25 - h * 0.1) * ballGroup.scale.x);
+      ballShadow.material.opacity = 0.38 * Math.max(0.12, 1 - h * 0.12);
+    }
+
+    // ---- Shooter: arms rise and a small hop on release ----
+    armT += ((flying ? 1 : 0) - armT) * (1 - Math.exp(-dt * 9));
+    for (const a of shooterArms) a.rotation.x = -0.7 - 1.45 * armT;
+    if (jumpT < 1) jumpT = Math.min(1, jumpT + dt * 2.2);
+    shooter.position.y = Math.sin(jumpT * Math.PI) * 0.2;
+
+    // ---- Net spring, rim shake, pulse ring ----
+    const sdt = Math.min(dt, 1 / 30);
+    netVel += (-180 * netPos - 9 * netVel) * sdt;
+    netPos += netVel * sdt;
+    net.scale.set(1 - netPos * 0.12, 1 + netPos * 0.35, 1 - netPos * 0.12);
+    rimShake = Math.max(0, rimShake - dt * 2.2);
+    rim.position.y = HOOPS.rim.y + Math.sin(now * 0.09) * 0.012 * rimShake;
+    rim.rotation.y = Math.sin(now * 0.07) * 0.035 * rimShake;
+    if (pulseT < 1) {
+      pulseT = Math.min(1, pulseT + dt * 1.6);
+      pulse.scale.setScalar(HOOPS.rim.radius * (1 + pulseT * 5));
+      pulse.material.opacity = 0.85 * (1 - pulseT) * (1 - pulseT);
+      if (pulseT >= 1) pulse.visible = false;
+    }
+
+    // ---- Lights, crowd, markers ----
+    rimFlash = Math.max(0, rimFlash - dt * 2.2);
+    camShake = Math.max(0, camShake - dt * 2.4);
+    crowdJump = Math.max(0, crowdJump - dt * 1.4);
+    glow.intensity = 4.5 + rimFlash * 22;
+    crowd.position.y = Math.sin(now * 0.0015) * 0.04 + Math.abs(Math.sin(now * 0.018)) * 0.14 * crowdJump;
+    spotBeam.material.opacity = 0.06 + Math.sin(now * 0.002) * 0.025;
+    spotMarker.scale.setScalar(1 + Math.sin(now * 0.004) * 0.04);
+    guide.material.opacity = 0.35 + Math.sin(now * 0.004) * 0.15;
+    updateConfetti(dt);
+
+    // ---- Camera ----
     camera.position.lerp(desired, 1 - Math.exp(-dt * 2.4));
     look.lerp(focus, 1 - Math.exp(-dt * 3.2));
+    if (camShake > 0) {
+      shakeVec.set(Math.random() - 0.5, Math.random() - 0.5, 0).multiplyScalar(camShake * 0.07);
+      camera.position.add(shakeVec);
+    } else {
+      shakeVec.set(0, 0, 0);
+    }
     camera.lookAt(look);
-    camera.fov = 48 + rimFlash * 1.8;
-    camera.updateProjectionMatrix();
-    netKick = Math.max(0, netKick - dt * 2.8);
-    rimFlash = Math.max(0, rimFlash - dt * 2.2);
-    net.scale.y = 1 + Math.sin((1 - netKick) * Math.PI) * netKick * 0.2;
-    net.position.y = HOOPS.rim.y - (1 - Math.cos((1 - netKick) * Math.PI * 0.5)) * 0.03;
-    glow.intensity = 4.5 + rimFlash * 22;
-    crowd.position.y = Math.sin(now * 0.0015) * 0.04;
-    spotBeam.material.opacity = 0.06 + Math.sin(now * 0.002) * 0.025;
-    effects.update(dt, {x: ballGroup.position.x, y: ballGroup.position.y, z: ballGroup.position.z}, current?.phase === 'flight');
+    const fov = 48 + rimFlash * 1.8;
+    if (Math.abs(camera.fov - fov) > 0.005) {
+      camera.fov = fov;
+      camera.updateProjectionMatrix();
+    }
+
+    effects.update(dt, {x: ballGroup.position.x, y: ballGroup.position.y, z: ballGroup.position.z}, flying);
     renderer.render(scene, camera);
+    camera.position.sub(shakeVec);
   }
   requestAnimationFrame(frame);
 
@@ -417,6 +709,16 @@ export function createHoopsView(canvas) {
       effects.clear();
       renderer.dispose();
       scoreTexture.dispose();
+      trail.geometry.dispose();
+      trail.material.dispose();
+      confetti.geometry.dispose();
+      confetti.material.dispose();
+      pulse.geometry.dispose();
+      pulse.material.dispose();
+      guide.geometry.dispose();
+      guide.material.dispose();
+      ballShadow.geometry.dispose();
+      ballShadow.material.dispose();
     },
   };
 }

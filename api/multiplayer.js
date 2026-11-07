@@ -17,7 +17,11 @@ export function makeHandler(storage=store){return async(req,res)=>{
   if(!/^[A-Z2-9]{4}$/.test(a.code??''))throw Error('Enter the four-character lobby code.');
   for(let i=0;i<10;i++){
    const key='pvp:'+a.code,raw=await storage.get(key);if(!raw)throw Error('Lobby not found or expired. Ask the host for a new code.');
-   const r=JSON.parse(raw),now=Date.now(),extra=mutateMatch(r,a,now);r.revision++;
+   const r=JSON.parse(raw),now=Date.now(),extra=mutateMatch(r,a,now);
+   // Reads are the hot path at 5-10 Hz per phone. If a poll changed nothing,
+   // skip the compare-and-swap entirely so it cannot collide with a shot write.
+   if((a.op==='read'||a.op==='view')&&JSON.stringify(r)===raw)return res.json({ok:true,...extra,match:publicMatch(r,now,a.sinceShot)});
+   r.revision++;
    if(await storage.save(key,raw,JSON.stringify(r)))return res.json({ok:true,...extra,match:publicMatch(r,now,a.sinceShot)});
   }throw Error('The lobby is busy. Please try again.');
  }catch(error){res.status(400).json({ok:false,error:error.message});}

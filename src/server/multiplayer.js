@@ -62,7 +62,9 @@ export function mutateMatch(r,a,now=Date.now()){
  }
  if(a.op==='view'){if(!host&&r.mode!=='multi')fail('This lobby uses one shared screen. Join from your phone instead.');return {};}
  if(!host&&!player)fail('Invalid session. Join the lobby again.');
- if(player)player.seen=now;
+ // Heartbeats only need second-level precision; writing `seen` on every 5 Hz
+ // poll would force a Redis save and race the shooter's compare-and-swap.
+ if(player&&now-(player.seen??0)>4000)player.seen=now;
  if(a.op==='read')return {};
  if(a.op==='settings'){
   if(!host||r.phase!=='lobby')fail('Only the host can change lobby settings.');
